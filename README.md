@@ -1,1 +1,1 @@
-# Code for Lanuch School's RB101 course #
+# Code for Launch School's RB101 course #
