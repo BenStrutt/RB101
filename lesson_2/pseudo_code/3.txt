@@ -1,0 +1,29 @@
+Given an array of integers.
+
+Set a new empty array variable to store result.
+Set a variable to track which iteration through a loop we're in.
+Initialize this variable to 0.
+Write a loop to itirate over each value in the given array.
+Increment the iteration variable by 1.
+If the iteration variable is odd, push the variable at the current index to
+the results array.
+
+Return the results array.
+
+
+
+
+START
+
+# Given an array of strings stored as 'given_array'
+
+SET result_array = []
+SET iteration = 0
+
+WHILE iteration < length of given_array
+  IF (iteration + 1) mod 2 != 1
+    PUSH given_array[iteration] to result_array
+  
+  iteration += 1
+
+PRINT result_array

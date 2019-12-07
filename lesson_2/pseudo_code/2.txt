@@ -1,0 +1,22 @@
+Given an array of strings.
+
+Set an empty string variable to store the result.
+Iterate over the given array.
+-Push the string at the current index in the array to the result string
+
+
+
+
+START
+
+# Given an array of strings.
+
+SET result_string = ""
+SET current_index = 0
+
+WHILE current_index < length of array
+  PUSH array[current_index] to result_string
+
+PRINT result_string
+
+END

@@ -1,0 +1,15 @@
+Get two numbers from the user
+Store each number into a seperate variable
+Add the variable and print the result
+
+
+START
+
+GET first integer
+SET firstnum = user input
+GET second integer
+SET secondnum = user input
+
+PRINT firstnum + secondnum
+
+END
