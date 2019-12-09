@@ -1,0 +1,7 @@
+welcome: "Welcome to our mortgage calculator!"
+get_loan_amount: "Please enter your total loan amount."
+get_apr: "Please enter your APR in percentage."
+get_loan_length: "Please enter your loan duration in months."
+invalid: "Sorry, invalid value.  Try again."
+again?: "Would you like to calculate again? (y/n)"
+thanks: "Thank you for using our calculator.  Goodbye!"
