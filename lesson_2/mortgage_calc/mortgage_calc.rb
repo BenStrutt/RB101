@@ -2,62 +2,82 @@ require 'yaml'
 
 MESSAGE = YAML.load(File.open('.config.yml'))
 
-def out(key)
+# Outputs messages to screen
+def output(key)
   puts '-' + MESSAGE[key]
 end
 
-def user_in(key)
-  puts '-' + MESSAGE[key]
+# Receives and returns input from user
+def user_input(key)
+  output key
   print '-> '
   gets.chomp
 end
 
+# Validates the user's input for loan amount and returns as a float
 def valid_loan?(n)
-  n = n.delete('$')
-  n = n.delete(',')
+  n.delete! '$,'
+  p n
   return false unless n =~ /^\d+\.?\d*$/
+  return false unless n.to_f > 0
   n.to_f
 end
 
+# Validates the user's input for APR amount and returns as a monthly rate
 def valid_apr?(n)
-  n = n.delete('%')
+  n.delete! '%'
   return false unless n =~ /^\d+\.?\d*$/
   (n.to_f / 100) / 12
 end
 
+# Validates the user's input for loan length and returns as a float
 def valid_length?(n)
   return false unless n =~ /^\d+$/
   n.to_f
 end
 
-def user_input(key)
-  output = ''
-  loop do
-    output = user_in(key)
-    case key[-1]
-    when 't' then break if output = valid_loan?(output)
-    when 'r' then break if output = valid_apr?(output)
-    when 'h' then break if output = valid_length?(output)
+# Receives user input
+def receive(input)
+  value = false
+  while value == false
+    case input
+    when 'loan_amount' then value = valid_loan?(user_input('loan_amount'))
+    when 'apr' then value = valid_apr?(user_input('apr'))
+    when 'loan_length' then value = valid_length?(user_input('loan_length'))
     end
-    out 'invalid'
+    output 'invalid' if value == false
   end
-  output
+  value
 end
 
-def format_mortgage(n)
-  n.length > 6 ? n.insert(-7, ',') : n
+# Calculates the user's mortgage
+def calculate_mortgage(amount, interest, length)
+  amount * (interest / (1 - (1 + interest)**-length))
 end
 
-out 'welcome'
+# Format's the calculated mortgage as a more readable string
+def format_mortgage(mortgage)
+  mortgage.length > 6 ? mortgage.insert(-7, ',') : mortgage
+end
+
+def clear
+  system('clear') || system('cls')
+end
+
+clear
+output 'welcome'
 
 loop do
-  loan_amount = user_input 'get_loan_amount'
-  interest = user_input 'get_apr'
-  loan_length = user_input 'get_loan_length'
-  mortgage = loan_amount * (interest / (1 - (1 + interest)**-loan_length))
-  mortgage = mortgage.round(2) if mortgage.is_a? Float
-  puts "Your monthly mortgage is $#{format_mortgage(mortgage.to_s)}."
-  break unless user_in('again?').downcase.start_with?('y')
+  loan_amount = receive 'loan_amount'
+  interest_rate = receive 'apr'
+  loan_duration = receive 'loan_length'
+  mortgage = calculate_mortgage(loan_amount, interest_rate, loan_duration)
+  mortgage = format_mortgage(mortgage.round(2).to_s)
+  clear
+  puts "-Your monthly mortgage is $#{mortgage}!"
+  break unless user_input('again?').downcase.start_with?('y')
+  clear
 end
 
-out 'thanks'
+clear
+output 'thanks'
