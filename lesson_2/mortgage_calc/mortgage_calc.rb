@@ -51,7 +51,8 @@ end
 
 # Calculates the user's mortgage
 def calculate_mortgage(amount, interest, length)
-  amount * (interest / (1 - (1 + interest)**-length))
+  mortgage = amount * (interest / (1 - (1 + interest)**-length))
+  format_mortgage(mortgage.round(2).to_s)
 end
 
 # Format's the calculated mortgage as a more readable string
@@ -81,7 +82,6 @@ loop do
   interest_rate = receive 'apr'
   loan_duration = receive 'loan_length'
   mortgage = calculate_mortgage(loan_amount, interest_rate, loan_duration)
-  mortgage = format_mortgage(mortgage.round(2).to_s)
   clear
   puts "-Your monthly mortgage is $#{mortgage}!"
   break unless another_calculation?
