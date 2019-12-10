@@ -17,7 +17,6 @@ end
 # Validates the user's input for loan amount and returns as a float
 def valid_loan?(n)
   n.delete! '$,'
-  p n
   return false unless n =~ /^\d+\.?\d*$/
   return false unless n.to_f > 0
   n.to_f
@@ -60,6 +59,16 @@ def format_mortgage(mortgage)
   mortgage.length > 6 ? mortgage.insert(-7, ',') : mortgage
 end
 
+# Asks the user whether they'd like to calculate again
+def another_calculation?
+  loop do
+    answer = user_input('again?').downcase
+    return true if answer == 'yes' || answer == 'y'
+    return false if answer == 'no' || answer == 'n'
+    output 'invalid'
+  end
+end
+
 def clear
   system('clear') || system('cls')
 end
@@ -75,7 +84,7 @@ loop do
   mortgage = format_mortgage(mortgage.round(2).to_s)
   clear
   puts "-Your monthly mortgage is $#{mortgage}!"
-  break unless user_input('again?').downcase.start_with?('y')
+  break unless another_calculation?
   clear
 end
 
