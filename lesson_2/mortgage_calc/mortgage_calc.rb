@@ -15,36 +15,55 @@ def user_input(key)
 end
 
 # Validates the user's input for loan amount and returns as a float
-def valid_loan?(n)
+def validate_loan(n)
   n.delete! '$,'
-  return false unless n =~ /^\d+\.?\d*$/
-  return false unless n.to_f > 0
+  return 'not_number' unless n =~ /^\d+\.?\d*$/
+  return 'zero' unless n.to_f > 0
   n.to_f
 end
 
 # Validates the user's input for APR amount and returns as a monthly rate
-def valid_apr?(n)
+def validate_apr(n)
   n.delete! '%'
-  return false unless n =~ /^\d+\.?\d*$/
+  return 'not_number' unless n =~ /^\d+\.?\d*$/
+  return 'zero' unless n.to_f > 0
   (n.to_f / 100) / 12
 end
 
 # Validates the user's input for loan length and returns as a float
-def valid_length?(n)
-  return false unless n =~ /^\d+$/
+def validate_length(n)
+  return 'not_number' unless n =~ /^\d+$/
+  return 'zero' unless n.to_f > 0
   n.to_f
 end
 
-# Receives user input
-def receive(input)
-  value = false
-  while value == false
-    case input
-    when 'loan_amount' then value = valid_loan?(user_input('loan_amount'))
-    when 'apr' then value = valid_apr?(user_input('apr'))
-    when 'loan_length' then value = valid_length?(user_input('loan_length'))
-    end
-    output 'invalid' if value == false
+def user_input_error?(answer)
+  true if answer == 'zero' || answer == 'not_number'
+end
+
+def error_message(key)
+  output 'zero' if key == 'zero'
+  output 'not_number' if key == 'not_number'
+  output 'yes_or_no' if key == 'yes_or_no'
+end
+
+def receive_user_input(key)
+  value = ''
+  loop do
+    value = get_value(key)
+    break unless user_input_error?(value)
+    clear
+    error_message(value)
+  end
+  clear
+  value
+end
+
+def get_value(key)
+  case key
+  when 'loan_amount' then value = validate_loan(user_input('loan_amount'))
+  when 'apr' then value = validate_apr(user_input('apr'))
+  when 'loan_length' then value = validate_length(user_input('loan_length'))
   end
   value
 end
@@ -62,12 +81,19 @@ end
 
 # Asks the user whether they'd like to calculate again
 def another_calculation?
+  answer = ''
   loop do
     answer = user_input('again?').downcase
-    return true if answer == 'yes' || answer == 'y'
-    return false if answer == 'no' || answer == 'n'
-    output 'invalid'
+    break if valid_play_again?(answer)
+    clear
+    error_message 'yes_or_no'
   end
+  answer == 'yes' || answer == 'y'
+end
+
+def valid_play_again?(answer)
+  %w(y yes n no).each { |n| return true if n == answer }
+  false
 end
 
 def clear
@@ -78,9 +104,9 @@ clear
 output 'welcome'
 
 loop do
-  loan_amount = receive 'loan_amount'
-  interest_rate = receive 'apr'
-  loan_duration = receive 'loan_length'
+  loan_amount = receive_user_input 'loan_amount'
+  interest_rate = receive_user_input 'apr'
+  loan_duration = receive_user_input 'loan_length'
   mortgage = calculate_mortgage(loan_amount, interest_rate, loan_duration)
   clear
   puts "-Your monthly mortgage is $#{mortgage}!"
