@@ -11,9 +11,21 @@ end
 operator = ''
 loop do
   puts "Enter 's' to compute the sum, 'p' to compute the product."
-  operator = ''
+  operator = gets.chomp
   break if %w(s p).include? operator
 end
+
+list_of_ints = [*1..num]
+case operator
+when 's'
+  sum_or_product = 'sum'
+  result = list_of_ints.sum
+when 'p'
+  sum_or_product = 'product'
+  result = list_of_ints.reduce(:*)
+end
+
+puts "The #{sum_or_product} of the integers between 1 and #{num} is #{result}."
 
 # >> Please enter an integer greater than 0:
 # 5
